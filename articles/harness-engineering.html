@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness engineering: the part you control | Agentic coding guide</title>
+<meta name="description" content="An agent is a model plus a harness. The model is rented and changes every few months. The harness is yours, and it is where most results are won or lost.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Harness engineering: the part you control">
+<meta property="og:description" content="An agent is a model plus a harness. The model is rented and changes every few months. The harness is yours, and it is where most results are won or lost.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Harness engineering: the part you control</h1>
+  <p class="lede">An agent is a model plus a harness. You rent the model. You build the harness, and that is where most results are won or lost.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>Every team using coding agents gets access to the same few models. They change every few months, and each new one is a little better than the last. If the model were the whole story, everyone would get the same results. They do not. Two people can point the same model at the same repo and get a clean, tested change in one case and a confident mess in the other.</p>
+<p>The difference is the harness: everything around the model that decides what it sees, what it can do and how its work is judged.</p>
+
+<h2>What a model actually does</h2>
+<p>A language model does one thing. It takes the text it has been given and produces more text, one token at a time, based on its training and on the context for this call. That is all. It does not remember yesterday. It does not know your codebase unless something put your codebase in front of it.</p>
+<p>A tool call is also just output. When an agent "runs the tests", the model writes a request that says, in effect, "please run this command". The harness reads that request, runs the command, and puts the result back into the context for the next turn. The model never touched your machine. The harness did, on its behalf.</p>
+<p>Once you see it that way, a lot of agent behaviour stops being mysterious. If the agent did not follow your naming convention, was the convention anywhere it could see? If it claimed the tests pass, did it have a way to run them? If it edited a file it should have left alone, did anything stop it?</p>
+
+<h2>The parts of a harness</h2>
+<p>Different tools package these differently, but the parts are the same everywhere.</p>
+<ul>
+  <li><strong>Instructions.</strong> The standing rules the agent reads at the start of every session, usually an <code>AGENTS.md</code> or <code>CLAUDE.md</code> file in the repo.</li>
+  <li><strong>Skills.</strong> Written procedures for a type of task, such as how to cut a release or how to debug a flaky test. The agent sees a one-line description of each and loads the full text only when it needs it.</li>
+  <li><strong>Tools.</strong> What the agent can actually do: run shell commands, read and write files, drive a browser, call an API.</li>
+  <li><strong>Context.</strong> Everything in the window on a given turn: the instructions, the files it has read, tool output, and the conversation so far.</li>
+  <li><strong>Checks.</strong> The tests, linters, type checkers and reviewers that tell the agent, and you, whether the work is right.</li>
+  <li><strong>Permissions.</strong> What it is allowed to touch, and which actions need a person to say yes.</li>
+</ul>
+<p>Model choice belongs on the list too. Which model runs which job, and with how much thinking effort, is a harness decision rather than a fixed fact.</p>
+
+<h2>Guides and sensors</h2>
+<p>Birgitta Böckeler, writing on martinfowler.com, splits the harness into two kinds of control. Guides steer the agent before it acts: instructions, skills, examples, a well-trodden path through the code. Sensors give it feedback after it acts: tests, linters, type checks, a second model reviewing the diff.</p>
+<p>Some sensors are deterministic. A type checker gives the same answer every time, quickly and cheaply. Others are judgement calls made by another model. Both are useful, and they fail in different ways, so a good harness has some of each.</p>
+<p>A useful rule for sensors: success is silent, failure is verbose. A passing check should cost the agent almost nothing to read. A failing one should say exactly what is wrong and how to fix it. "Lint failed" sends the agent hunting. "Imports from <code>lib/legacy</code> are not allowed in new code; use <code>lib/auth/jwt.ts</code>" fixes the problem in one step.</p>
+
+<h2>What the agent cannot see does not exist</h2>
+<p>Ryan Lopopolo's write-up of building a product with Codex makes this point well. Knowledge that lives in a chat thread, a slide deck or someone's head is invisible to the agent. If a decision matters, it has to be in the repo, in a form the agent can find.</p>
+<p>That does not mean one giant instructions file. His team's <code>AGENTS.md</code> is a short map: what this project is, the rules that are easy to break, and where to look for more. The detail lives in docs the agent reads when the task calls for it. A long manual loaded on every turn crowds out the work and gets ignored in the middle.</p>
+<p>Two more ideas from the same piece are worth keeping. Enforce invariants rather than implementations: "every endpoint has an auth check" is a rule a test can hold, while "write the handler like this" goes stale. And clean up on a schedule. Agents copy what they see, so old patterns spread unless something sweeps them out.</p>
+
+<h2>Where a fix belongs</h2>
+<p>When an agent gets something wrong, the instinct is to correct it in the chat and move on. That fixes the output once. The next session makes the same mistake.</p>
+<p>A better habit is to ask which layer should have prevented it, from lightest to heaviest:</p>
+<ol class="steps">
+  <li><strong>The task itself.</strong> Was something missing from this one request? Add it to the brief.</li>
+  <li><strong>Standing instructions.</strong> Is it a rule that applies every time? One line in <code>AGENTS.md</code>.</li>
+  <li><strong>A check.</strong> Does the rule keep getting broken anyway? Turn it into a test, a lint rule or a hook that blocks the bad action.</li>
+  <li><strong>A skill.</strong> Is it a whole procedure with several steps and judgement calls? Write it down as a skill with its own checks.</li>
+</ol>
+<p>One rule of thumb saves a lot of time: rewording cannot fix a missing capability. If the agent cannot run the browser, no amount of "please check it in the browser" will help. Give it the tool, or change the criterion to something it can check.</p>
+
+<h2>A small example</h2>
+<p>Sam maintains the web shop for Fernhill Supply, a small garden-tools retailer. Every time Sam asks an agent to add a database column, the agent hand-edits an old migration file instead of generating a new one. Sam fixes it, explains, and the next session does it again.</p>
+<p>Sam adds one line to <code>AGENTS.md</code>: "Never edit <code>db/migrations/</code> by hand; run <code>pnpm db:generate</code>." That mostly works. A month later it happens again during a long session, so Sam adds a check in CI that fails if an existing migration file changes, with an error that names the command to run instead. Now the rule holds whether or not the agent remembers it.</p>
+<p>Nothing about the model changed. The harness did.</p>
+
+<h2>Why this is worth the effort</h2>
+<p>Models will keep improving, and each upgrade will lift everyone a little. A good harness compounds. Every rule written down, every check added and every procedure turned into a skill makes the next run better, whatever model is underneath. When a better model arrives, it lands in a harness that already knows your project.</p>
+<p>So when an agent does something dumb, resist blaming the model first. Ask what the harness gave it.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="index.html"><small>Back to</small>All articles</a>
+    <a class="next" href="agent-loop.html"><small>Next</small>The agent loop and acceptance criteria</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

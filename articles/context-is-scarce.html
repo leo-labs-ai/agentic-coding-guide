@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Context is scarce | Agentic coding guide</title>
+<meta name="description" content="Code is cheap. The context window is not. What goes in AGENTS.md and what stays out, progressive disclosure, skills versus tools, and why you should clear rather than compact.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Context is scarce">
+<meta property="og:description" content="Code is cheap. The context window is not. What goes in AGENTS.md and what stays out, progressive disclosure, skills versus tools, and why you should clear rather than compact.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Context is scarce</h1>
+  <p class="lede">Code is cheap now. The agent's attention is not. Most of harness engineering is deciding what goes into the window, when, and what stays out.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>Everything an agent knows on a given turn is in its context window: the system prompt, your instructions, the skills it can see, every file it has read, every tool result, and the whole conversation so far. Context windows have grown large. That makes it tempting to put everything in. It does not work.</p>
+
+<h2>Bigger windows are not smarter windows</h2>
+<p>A model can retrieve a fact from a very long context. Reasoning well across all of it is another matter. Quality drops as the window fills: instructions in the middle get missed, older details blur, and the model starts confusing what it read with what it did.</p>
+<p>Matt Pocock calls the early part of the window the "smart zone". Keep each task inside it and the agent stays sharp. A huge window gives you a huge amount of retrieval, not a huge amount of good thinking. In practice that means keeping tasks small, and watching how full the window is as you go.</p>
+
+<h2>New task, new session</h2>
+<p>The simplest habit is also the most effective. When the task changes, start a fresh session. Give each task its own folder or git worktree, so parallel jobs do not trip over each other.</p>
+<p>When a session gets long, most tools offer to compact it: summarise what happened and carry on. It is better to clear. A summary keeps the conclusions and loses the reasons, and it carries forward whatever confusion built up. Write down what matters (the plan, the decisions, what is left) in a file, start a clean session, and point it at the file.</p>
+<p>This is also why reviewers should run in a fresh session. An agent reviewing its own work, in the same window it built it in, is reading through all its own assumptions. A fresh reviewer sees only the diff and the criteria, which is what a reviewer should see.</p>
+
+<h2>Knowledge lives in files, not chat</h2>
+<p>Anything you explain in a chat is gone when the session ends. If it matters beyond today, put it where the next session will find it: the repo's instructions, a doc, a skill. Chat apps have the same idea in a different form. A project with standing instructions and a few reference files is a small harness, and it beats re-explaining yourself every time.</p>
+
+<h2>What goes in AGENTS.md</h2>
+<p><code>AGENTS.md</code> (or <code>CLAUDE.md</code>) is read at the start of every session and stays in the window for every turn. Every line costs attention all the time. So the test for each line is simple: would the agent act differently without it? If not, cut it.</p>
+<div class="compare">
+  <div class="panel good">
+    <h3>Rules it would otherwise break</h3>
+    <ul>
+      <li>Hazards: "Never edit <code>db/migrations/</code> by hand; run <code>pnpm db:generate</code>."</li>
+      <li>How to verify: "Verify with <code>pnpm test:unit</code>."</li>
+      <li>Current direction: "Moving auth from sessions to JWT; new code uses <code>lib/auth/jwt.ts</code> only."</li>
+      <li>Where to look: "UI work: read <code>docs/design-system.md</code>."</li>
+      <li>Boundaries: "Changes in <code>src/billing/</code> need human review."</li>
+    </ul>
+  </div>
+  <div class="panel bad">
+    <h3>Things it can work out or does not need</h3>
+    <ul>
+      <li>What the code already shows: the stack, the folder layout.</li>
+      <li>A copy of the README.</li>
+      <li>Generic advice: "write clean code", "be careful".</li>
+      <li>Live status, dates and counters, which go stale and change the prompt every session.</li>
+      <li>Shouting in capitals. It does not help.</li>
+    </ul>
+  </div>
+</div>
+<p>Vague lines are worth rewriting rather than deleting. "Be careful with git" changes nothing. "Check <code>git status</code> before editing; never reset work you did not make" changes behaviour.</p>
+<p>Aim for something like twenty lines. A file that grows forever is a sign it is being used as a diary. Write a pruning rule into the file itself, such as "prefer rewriting or pruning existing entries over appending", so the agent helps keep it short.</p>
+
+<h2>Progressive disclosure</h2>
+<p>The alternative to one big file is layers. Think of three tiers, by when you pay for them:</p>
+<ul>
+  <li><strong>Always loaded.</strong> Identity, the few rules that must never break, and a routing table that says where to find everything else. Paid on every turn, so keep it small.</li>
+  <li><strong>Flagged sections.</strong> Short blocks marked as applying only in some cases, such as "only if touching payments". Still paid for, but they steer attention.</li>
+  <li><strong>Read when needed.</strong> Reference docs, skills and nested <code>AGENTS.md</code> files in subfolders. Paid only when the task needs them.</li>
+</ul>
+<p>Loading everything up front fails in three ways. Rules in the middle get lost. Models can only juggle so many instructions at once before they start dropping some. And when a long session is compacted, rules that were loaded at the start can vanish from the summary. Give the agent an index, not the bodies.</p>
+
+<h2>Skills and tools</h2>
+<p>A tool performs an action: run a command, fetch a page, query a database. A skill supplies instructions for a type of task: how to cut a release, how to write the weekly report, how to debug a flaky test.</p>
+<p>Skills are progressive disclosure in practice. The agent sees only each skill's short description. When a task matches, it loads the full text. So the description does all the selecting and the body does all the work. A good description says what the skill does, when to use it, using the words people actually type, and where a neighbouring skill takes over instead.</p>
+<p>Descriptions are not free either. Every one is listed in every session. Install fifty skills and the list itself crowds the window, and some tools quietly drop descriptions that do not fit. A skill the agent never sees does not exist. A handful of sharp skills beats a drawer full of vague ones.</p>
+<p>To check a skill, write five prompts that should load it and three that should not, then see what actually happens.</p>
+
+<h2>Keep noise out of the window</h2>
+<p>Tool output is the silent context killer. A full test log, a long API response or a page of HTML can fill a big share of the window in one call. Capture it once to a file, then read the slice you need with a search or a filter. The agent gets the three failing tests, not three thousand passing ones.</p>
+<p>Code can do the same job earlier. If the agent needs overdue projects from a large export, a few lines of code that filter the data before the model sees it beat pasting the whole export in.</p>
+
+<h2>Checking context before you add it</h2>
+<p>Before you put something in front of an agent, a few quick questions help:</p>
+<ul>
+  <li>Where did it come from, and is it the authority on this?</li>
+  <li>Is it relevant to this task, and is it enough to act on?</li>
+  <li>Is it current?</li>
+  <li>Should this agent be allowed to see it at all?</li>
+</ul>
+<p>Then put it at the latest point it is reliably needed. Grounding facts go in early. Detail for a specific step goes in at that step. Review criteria go in at review.</p>
+
+<h2>One more thing: pick the model first</h2>
+<p>Choose the model at the start of a session. Switching halfway through means the whole conversation is sent again to a model that has seen none of it, which is slow and expensive. The next article explains why.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="agent-loop.html"><small>Previous</small>The agent loop and acceptance criteria</a>
+    <a class="next" href="prompt-caching.html"><small>Next</small>Prompt caching and the recurring cost of a prompt</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

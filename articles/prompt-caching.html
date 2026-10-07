@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt caching and the recurring cost of a prompt | Agentic coding guide</title>
+<meta name="description" content="Every turn re-sends the conversation. Caching makes the repeated part cheaper, not free. How the cost grows, what breaks the cache, and what to do about it.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Prompt caching and the recurring cost of a prompt">
+<meta property="og:description" content="Every turn re-sends the conversation. Caching makes the repeated part cheaper, not free. How the cost grows, what breaks the cache, and what to do about it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Prompt caching and the recurring cost of a prompt</h1>
+  <p class="lede">Every line you add to an agent's standing context is paid for again on every turn. Caching softens that. It does not remove it.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>This article is about concepts, not prices. Rates differ between providers and change often. The shapes below do not.</p>
+
+<h2>Every turn starts from scratch</h2>
+<p>Models do not remember between calls. When an agent takes its tenth step in a session, the harness sends the model everything again: the system prompt, the tool definitions, your instructions, the skill descriptions, and all nine earlier steps with their tool results. The model reads the lot, then produces the next step.</p>
+<p>So a session costs far more than what you typed. You pay to re-read the whole context, once per turn.</p>
+
+<h2>What caching does</h2>
+<p>Providers soften this with prompt caching. If a request starts with exactly the same text as a recent one, the provider can reuse the work it already did on that opening stretch, the prefix, instead of processing it again. Cached reads are cheaper and faster than fresh ones.</p>
+<p>Harnesses arrange requests to take advantage of this. The things that never change go first: tool definitions, then standing instructions. The things that change go last: new messages and tool results. Each new turn shares a long prefix with the one before.</p>
+<p>Two points are easy to miss.</p>
+<ul>
+  <li><strong>Cached tokens still fill the window.</strong> Caching changes the price of reading the prefix, not its size. A bloated <code>AGENTS.md</code> crowds the model's attention whether it is cached or not.</li>
+  <li><strong>Cached tokens are still paid for.</strong> They are billed on every read, at a lower rate. Cheaper is not free.</li>
+</ul>
+
+<h2>How the cost grows</h2>
+<p>It helps to picture three shapes.</p>
+<p><strong>A fixed prefix grows linearly.</strong> Standing instructions are re-read on every turn. At a fixed rate, a prefix five times larger costs five times as much, on every turn, for the life of every session. Trimming a long instructions file is one of the few changes that pays off on every single call.</p>
+<p><strong>A growing history grows faster.</strong> Each turn adds to the conversation, and each later turn re-reads everything before it. Turn one reads one step, turn two reads two, turn three reads three. Add those up across a long session and the total climbs much faster than the session length. This is the maths behind "new task, new session". A fresh session resets the sum.</p>
+<figure class="diagram">
+  <svg viewBox="0 0 420 200" role="img" aria-labelledby="dg-c-t dg-c-d">
+    <title id="dg-c-t">Cost per turn, two shapes</title>
+    <desc id="dg-c-d">On the left, six equal bars: a fixed prefix costs the same on every turn. On the right, six rising bars: a growing history costs more on each turn, because every turn re-reads everything before it.</desc>
+    <path class="d-line" d="M20 150 H190 M230 150 H400"/>
+    <g class="d-soft">
+      <rect x="32" y="120" width="18" height="30" rx="3"/><rect x="58" y="120" width="18" height="30" rx="3"/><rect x="84" y="120" width="18" height="30" rx="3"/>
+      <rect x="110" y="120" width="18" height="30" rx="3"/><rect x="136" y="120" width="18" height="30" rx="3"/><rect x="162" y="120" width="18" height="30" rx="3"/>
+    </g>
+    <g class="d-accent">
+      <rect x="242" y="135" width="18" height="15" rx="3"/><rect x="268" y="120" width="18" height="30" rx="3"/><rect x="294" y="105" width="18" height="45" rx="3"/>
+      <rect x="320" y="90" width="18" height="60" rx="3"/><rect x="346" y="75" width="18" height="75" rx="3"/><rect x="372" y="60" width="18" height="90" rx="3"/>
+    </g>
+    <text class="d-label" x="105" y="174" text-anchor="middle">Fixed prefix</text>
+    <text class="d-small" x="105" y="192" text-anchor="middle">same cost every turn</text>
+    <text class="d-label" x="315" y="174" text-anchor="middle">Growing history</text>
+    <text class="d-small" x="315" y="192" text-anchor="middle">each turn re-reads the last</text>
+    <text class="d-small" x="20" y="30">cost per turn</text>
+  </svg>
+  <figcaption>Six turns of a session. Add up the bars on the right and you see why long sessions get expensive.</figcaption>
+</figure>
+<p><strong>Delegation can multiply.</strong> When an agent hands work to sub-agents, and they hand work to their own sub-agents, each layer carries its own context. Done carelessly, the cost multiplies with depth. Done well, it is a saving: each sub-agent gets a small, focused context instead of inheriting the parent's whole history, and hands back a short result.</p>
+
+<h2>What breaks the cache</h2>
+<p>The cache only matches an identical prefix. Change anything early in the request and everything after that point has to be processed fresh.</p>
+<ul>
+  <li><strong>Live values in standing instructions.</strong> A date, a counter or a status line near the top of the prompt changes every session, or every turn, and invalidates everything below it. Keep instructions static. Put live facts in a message at the end, or in a file the agent reads when it needs to.</li>
+  <li><strong>Editing early memory.</strong> If a memory block near the start is rewritten, the cache breaks from that point. Appending at the end keeps the prefix intact.</li>
+  <li><strong>Switching models.</strong> Caches belong to one model. Switch mid-session and the whole conversation is sent to a model with an empty cache. Pick the model at the start.</li>
+  <li><strong>Reshuffling tools.</strong> Adding, removing or reordering tool definitions changes the very start of the prefix.</li>
+</ul>
+<p>A related trap: a memory file on disk does nothing by itself. It only affects behaviour once the harness injects it into the context, and where it is injected decides what it does to the cache.</p>
+
+<h2>The counterintuitive result</h2>
+<p>Because cached reads are so much cheaper than fresh ones, a larger model running on a warm cache can cost less per turn than a smaller model that keeps busting its cache. "Use the small model to save money" is often right for one-off jobs. In a long session, cache behaviour can matter more than the headline rate.</p>
+<p>The same thinking explains why a gateway that reports cache hit rates is worth having. A sudden drop usually means someone put a timestamp in a prompt.</p>
+
+<h2>Filtering before the model</h2>
+<p>The cheapest token is one the model never reads. If an agent needs ten rows from a large export, a few lines of code that filter the export first beat pasting it in. Some harnesses lean into this: the model writes a short script, the script does the heavy lifting, and only the result comes back into the context. This is sometimes called code mode, and it keeps both cost and context in check.</p>
+
+<h2>A worked comparison</h2>
+<p>Sam's team at Fernhill Supply has two setups for the same repo.</p>
+<p>In the first, <code>AGENTS.md</code> has grown to several hundred lines, including a "current sprint" section with today's date at the top. Sessions run all day, and people switch models when they get stuck.</p>
+<p>In the second, <code>AGENTS.md</code> is twenty lines of rules and pointers. The sprint notes live in a file the agent reads when asked. Each task gets a fresh session, and the model is chosen at the start.</p>
+<p>The second setup re-reads a fraction of the prefix on every turn, keeps its cache warm because the prefix never changes, resets the growing history with each new task, and never sends a full conversation to a cold model. Nobody had to negotiate a better rate. They just stopped paying for the same text over and over.</p>
+
+<h2>Rules of thumb</h2>
+<ul>
+  <li>Keep standing instructions short and static.</li>
+  <li>Put changing facts at the end, or in files read on demand.</li>
+  <li>Start a new session for a new task.</li>
+  <li>Choose the model at the start, and leave it.</li>
+  <li>Give sub-agents small contexts and ask for short results.</li>
+  <li>Filter big data with code before the model sees it.</li>
+</ul>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="context-is-scarce.html"><small>Previous</small>Context is scarce</a>
+    <a class="next" href="human-gates.html"><small>Next</small>Human gates, and why every "continue" is a harness failure</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

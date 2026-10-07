@@ -4,106 +4,184 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agentic coding: a practical guide</title>
-<meta name="description" content="A practical guide to working with coding agents: how to direct them, the agent loop, human gates, good habits, and how the bigger setup fits together.">
-<meta name="robots" content="noindex">
+<meta name="description" content="A practical guide to working with coding agents: the harness, the agent loop, human gates, context, and how the bigger setup fits together.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="Agentic coding: a practical guide">
-<meta property="og:description" content="How to work with coding agents so the output is reviewable, safe and actually right.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23c2410c'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta property="og:description" content="A practical guide to working with coding agents: the harness, the agent loop, human gates, context, and how the bigger setup fits together.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
+<script src="site.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">Harness engineering, in plain language</p>
-    <h1>Agentic coding: a practical guide</h1>
-    <p class="lede">How to work with coding agents so the output is reviewable, safe, and actually right for the people using it. Short sections, real habits, and one exercise you can try today.</p>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="index.html" aria-current="page">Guide</a></li>
+        <li><a href="articles/index.html">Articles</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
+<main id="main">
+<div class="wrap">
+<header class="hero">
+  <p class="kicker">Harness engineering, in plain language</p>
+  <h1>Agentic coding: a practical guide</h1>
+  <p class="lede">How to work with coding agents so the output can be reviewed and is right for the people who use it. Twelve short sections, habits you can start today, and a set of longer <a href="articles/index.html">articles</a> for when you want the detail.</p>
+</header>
 
-<div class="layout wrap">
-<nav class="toc" aria-label="Contents">
-  <p class="toc-title">On this page</p>
+<div class="layout">
+<nav class="toc" aria-label="On this page">
+  <h2>On this page</h2>
   <ol>
     <li><a href="#big-idea">The big idea</a></li>
     <li><a href="#levels">Four ways to direct an agent</a></li>
     <li><a href="#loop">The agent loop</a></li>
     <li><a href="#gates">Two human gates</a></li>
+    <li><a href="#context">Context is scarce</a></li>
     <li><a href="#habits">Practical habits</a></li>
-    <li><a href="#setup">The bigger setup</a></li>
-    <li><a href="#overview">Agentic systems overview</a></li>
     <li><a href="#where">Laptop, cloud or desktop app?</a></li>
-    <li><a href="#exercise">A first exercise</a></li>
+    <li><a href="#factory">The software factory</a></li>
+    <li><a href="#routines">Routines and loops</a></li>
+    <li><a href="#exercise">Exercises</a></li>
     <li><a href="#pitfalls">Things to watch out for</a></li>
-    <li><a href="#glossary">A few terms</a></li>
-    <li><a href="#resources">Resources</a></li>
+    <li><a href="#terms">Terms and further reading</a></li>
   </ol>
 </nav>
 
-<main id="main">
+<div class="sections">
 
-<section id="big-idea">
-  <h2>1. The big idea</h2>
-  <p>Writing code has become cheap. You pay for tokens and software gets built. The hard part is building software that is right for the business, that someone can maintain, and that can grow with the people using it.</p>
-  <div class="split">
-    <div class="card">
-      <p class="big">80%</p>
-      <p>An agent can get you most of the way from a rough brief: a working proof of concept in a day, a first version of a feature, the boring plumbing.</p>
-    </div>
-    <div class="card accent">
-      <p class="big">20%</p>
-      <p>The last stretch is where the value is. Knowing the client, the market, and what "right" looks like. That still needs experienced people steering.</p>
-    </div>
-  </div>
-  <p>So the goal isn't "AI writes code for me". The goal is an environment where people can try ideas safely, and where anything that ships has been checked properly. Engineers end up spending their time on deciding and reviewing, not typing.</p>
-  <p>A useful way to think about it: the <strong>harness</strong> is everything around the model. What context it reads, which tools it can use, what counts as done, and how work moves between people and agents. Better harnesses beat clever prompts.</p>
+<section class="guide-section" id="big-idea" aria-labelledby="big-idea-h">
+<div class="prose">
+  <h2 id="big-idea-h"><span class="section-num">01</span>The big idea</h2>
+  <p>Writing code has become cheap. Building software that is right for the business, that someone can maintain, and that can grow with the people using it is still hard. That is where the effort goes now.</p>
+  <p>An agent is a model plus a harness. The model is rented: everyone gets the same one, and it changes every few months. The harness is everything around it that you control: the instructions it reads, the tools it can call, the context it sees, the checks that judge its work, and the permissions that limit it.</p>
+</div>
+
+<figure class="diagram reveal">
+  <svg viewBox="0 0 420 300" role="img" aria-labelledby="dg1-t dg1-d">
+    <title id="dg1-t">Agent equals model plus harness</title>
+    <desc id="dg1-d">A small model box sits in the middle of a larger harness. Around it are six parts of the harness: instructions, skills, tools, context, checks and permissions.</desc>
+    <rect class="d-soft" x="6" y="6" width="408" height="288" rx="16"/>
+    <text class="d-label" x="26" y="40">The harness</text>
+    <text class="d-small" x="26" y="60">the part you control</text>
+    <g>
+      <rect class="d-box" x="24" y="82" width="120" height="34" rx="8"/><text x="84" y="104" text-anchor="middle">Instructions</text>
+      <rect class="d-box" x="24" y="136" width="120" height="34" rx="8"/><text x="84" y="158" text-anchor="middle">Skills</text>
+      <rect class="d-box" x="24" y="190" width="120" height="34" rx="8"/><text x="84" y="212" text-anchor="middle">Tools</text>
+      <rect class="d-box" x="276" y="82" width="120" height="34" rx="8"/><text x="336" y="104" text-anchor="middle">Context</text>
+      <rect class="d-box" x="276" y="136" width="120" height="34" rx="8"/><text x="336" y="158" text-anchor="middle">Checks</text>
+      <rect class="d-box" x="276" y="190" width="120" height="34" rx="8"/><text x="336" y="212" text-anchor="middle">Permissions</text>
+    </g>
+    <path class="d-line" d="M144 99 L162 128 M144 153 L162 153 M144 207 L162 178 M276 99 L258 128 M276 153 L258 153 M276 207 L258 178"/>
+    <rect class="d-accent" x="162" y="118" width="96" height="70" rx="10"/>
+    <text class="d-on-accent" x="210" y="158" text-anchor="middle">Model</text>
+    <text class="d-small" x="210" y="262" text-anchor="middle">The model is rented. The harness is yours.</text>
+  </svg>
+  <figcaption>When an agent does something dumb, ask first what the harness gave it.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>Most of the gap between what a model can do and what you actually see is a harness gap. The agent did not know the rule, could not run the test, or was never told what done looks like. Fix those and the same model looks much smarter.</p>
+  <p>An agent can get you most of the way from a rough brief: a working proof of concept in a day, a first pass at a feature, the boring plumbing. The last stretch is where the value is. Knowing the users, the market and what right looks like still needs experienced people steering. So aim for an environment where people can try ideas safely, and where anything that ships has been checked properly. Having AI type the code for you is the easy part.</p>
+  <p class="further">Read more: <a href="articles/harness-engineering.html">Harness engineering: the part you control</a></p>
+</div>
 </section>
 
-<section id="levels">
-  <h2>2. Four ways to direct an agent</h2>
+<section class="guide-section" id="levels" aria-labelledby="levels-h">
+<div class="prose">
+  <h2 id="levels-h"><span class="section-num">02</span>Four ways to direct an agent</h2>
   <div class="table-wrap">
   <table>
-    <thead><tr><th>Level</th><th>What you do</th><th>Who holds the context</th></tr></thead>
+    <thead><tr><th scope="col">Level</th><th scope="col">What you do</th><th scope="col">Who holds the context</th></tr></thead>
     <tbody>
       <tr><td><strong>Prompt</strong></td><td>One message, one answer</td><td>You</td></tr>
       <tr><td><strong>Conversation</strong></td><td>You steer it step by step</td><td>You, reviewing every step</td></tr>
       <tr><td><strong>Plan</strong></td><td>You agree a plan and the criteria it will be judged on</td><td>The plan is the contract</td></tr>
-      <tr><td><strong>Delegation</strong></td><td>You hand over a job and it runs on its own</td><td>You review the outcome</td></tr>
+      <tr><td><strong>Delegation</strong></td><td>You hand over a job and it runs on its own</td><td>The harness, and you review the outcome</td></tr>
     </tbody>
   </table>
   </div>
-  <p>The unit of work moves from a message to a job with acceptance criteria. Most people get stuck at "conversation". Getting to "plan" is the biggest jump, and it's mostly a habit change, not a tooling one.</p>
+  <p>The unit of work moves from a message to a job with acceptance criteria. Most people get stuck at conversation. Getting to plan is the biggest jump, and it is a habit change more than a tooling one.</p>
+  <p>Choosing a model is part of directing. Use the cheapest model that clears the bar for the job, keep the strongest for architecture, security and high-stakes review, and never let the builder grade its own work.</p>
+  <p class="further">Read more: <a href="articles/directing-agents.html">Directing agents: from prompts to delegation</a></p>
+</div>
 </section>
 
-<section id="loop">
-  <h2>3. The agent loop</h2>
-  <p>Every good run follows the same loop:</p>
+<section class="guide-section" id="loop" aria-labelledby="loop-h">
+<div class="prose">
+  <h2 id="loop-h"><span class="section-num">03</span>The agent loop</h2>
+  <p>A model on its own only produces text. It becomes an agent when a harness runs it in a loop: the model asks for a tool, the harness runs it, the result goes back in, and the model decides what to do next. Good runs follow the same shape.</p>
+</div>
+
+<figure class="diagram reveal">
+  <svg viewBox="0 0 420 310" role="img" aria-labelledby="dg2-t dg2-d">
+    <title id="dg2-t">The agent loop</title>
+    <desc id="dg2-d">Five steps in a cycle: orient, plan, execute, judge, learn, then back to orient. The loop stops when the acceptance criteria pass.</desc>
+    <circle class="d-line" cx="210" cy="165" r="120" stroke-dasharray="4 5"/>
+    <g class="d-arrow">
+      <polygon points="-5,-5 6,0 -5,5" transform="translate(280.5 68) rotate(36)"/>
+      <polygon points="-5,-5 6,0 -5,5" transform="translate(324.1 202.1) rotate(108)"/>
+      <polygon points="-5,-5 6,0 -5,5" transform="translate(210 285) rotate(180)"/>
+      <polygon points="-5,-5 6,0 -5,5" transform="translate(95.9 202.1) rotate(252)"/>
+      <polygon points="-5,-5 6,0 -5,5" transform="translate(139.5 68) rotate(324)"/>
+    </g>
+    <rect class="d-box" x="162" y="27" width="96" height="36" rx="18"/><text x="210" y="50" text-anchor="middle">Orient</text>
+    <rect class="d-box" x="276" y="110" width="96" height="36" rx="18"/><text x="324" y="133" text-anchor="middle">Plan</text>
+    <rect class="d-box" x="232" y="244" width="96" height="36" rx="18"/><text x="280" y="267" text-anchor="middle">Execute</text>
+    <rect class="d-soft" x="92" y="244" width="96" height="36" rx="18"/><text class="d-label" x="140" y="267" text-anchor="middle">Judge</text>
+    <rect class="d-box" x="48" y="110" width="96" height="36" rx="18"/><text x="96" y="133" text-anchor="middle">Learn</text>
+    <text class="d-label" x="210" y="160" text-anchor="middle">Stop when the</text>
+    <text class="d-label" x="210" y="180" text-anchor="middle">criteria pass</text>
+  </svg>
+  <figcaption>Bounded by the tools it may use, the budget it has and the permissions it holds.</figcaption>
+</figure>
+
+<div class="prose">
   <ol class="steps">
-    <li><strong>Orient.</strong> Read the task, the codebase and the relevant procedures before deciding anything.</li>
-    <li><strong>Plan.</strong> Write out an explicit plan and the criteria the result will be judged against.</li>
-    <li><strong>Execute.</strong> Do the work in an isolated sandbox, with only the tools the task needs.</li>
-    <li><strong>Judge.</strong> Tests, checks and a reviewing agent score the result against the criteria. If it fails, back to planning.</li>
-    <li><strong>Learn.</strong> Keep the outcome, the diff and the reviewer's edits so the next run is better.</li>
+    <li><strong>Orient.</strong> Read the task, the code and the relevant procedures before deciding anything.</li>
+    <li><strong>Plan.</strong> Write an explicit plan and the criteria the result will be judged against.</li>
+    <li><strong>Execute.</strong> Do the work on a branch or in a sandbox, with only the tools the task needs.</li>
+    <li><strong>Judge.</strong> Tests, checks and a separate reviewer score the result against the criteria. If it fails, go back to the plan.</li>
+    <li><strong>Learn.</strong> Keep the outcome, the diff and the reviewer's edits, and fix the harness where it let the agent down.</li>
   </ol>
-  <p class="note">The loop is bounded by three things: the tools it's allowed, the budget it has, and the permissions it holds.</p>
+  <p>The judge step only works if the criteria are checkable. "Fix the double charge" is a wish. "One intended purchase creates one order, even when the request is sent twice" is something a test can prove.</p>
+  <p class="further">Read more: <a href="articles/agent-loop.html">The agent loop and acceptance criteria</a></p>
+</div>
 </section>
 
-<section id="gates">
-  <h2>4. Two human gates</h2>
-  <div class="flow" aria-label="Request, gate 1, agent loop, proof of work, gate 2, deploy">
-    <span>Request</span><span class="gate">Gate 1: what and why</span><span>Agent loop</span><span>Proof of work</span><span class="gate">Gate 2: approved to ship</span><span>Deploy</span>
-  </div>
-  <div class="split">
-    <div class="card">
+<section class="guide-section" id="gates" aria-labelledby="gates-h">
+<div class="prose">
+  <h2 id="gates-h"><span class="section-num">04</span>Two human gates</h2>
+  <p>People spend their attention at two points: before the work starts and before it ships. Everything in between belongs to the loop.</p>
+  <ol class="flow reveal" aria-label="Where the gates sit">
+    <li><strong>Request</strong><span>a ticket or an idea</span></li>
+    <li class="gate"><strong>Gate 1</strong><span>what, why and done</span></li>
+    <li><strong>Agent loop</strong><span>build and check</span></li>
+    <li><strong>Proof of work</strong><span>diff and evidence</span></li>
+    <li class="gate"><strong>Gate 2</strong><span>approved to ship</span></li>
+    <li><strong>Deploy</strong><span>the real pipeline</span></li>
+  </ol>
+  <div class="compare">
+    <div class="panel">
       <h3>Gate 1, before the work</h3>
       <ul>
         <li>The agent restates the task in its own words, so a misunderstanding shows up before any work starts.</li>
-        <li>Agree why it's being done and what it should change.</li>
-        <li>Agree the acceptance criteria.</li>
+        <li>Agree why it is being done and what it should change.</li>
+        <li>Agree the acceptance criteria, and what is out of scope.</li>
       </ul>
     </div>
-    <div class="card">
+    <div class="panel">
       <h3>Gate 2, after the work</h3>
       <ul>
         <li>The diff, plus a plain summary of what changed.</li>
@@ -112,177 +190,189 @@
       </ul>
     </div>
   </div>
-  <p>If Gate 2 says no, the work goes back into the loop. People spend their attention on criteria and approvals rather than on keystrokes.</p>
+  <p>If you find yourself typing "continue" every few minutes, the harness has failed. The task was missing a criterion, a permission or a check, so the agent kept coming back to you instead. Fix that, and the next run needs you only at the gates.</p>
+  <p class="further">Read more: <a href="articles/human-gates.html">Human gates, and why every "continue" is a harness failure</a></p>
+</div>
 </section>
 
-<section id="habits">
-  <h2>5. Practical habits</h2>
-  <dl class="habits">
-    <dt>Context lives in the repo</dt>
-    <dd>Standards, procedures and architecture notes go in the repository (a README, an <code>AGENTS.md</code> or <code>CLAUDE.md</code>, a docs folder), not in your prompt. Agents read them every run, and they get reviewed like code.</dd>
-    <dt>Skills are written procedures</dt>
-    <dd>A release checklist, an incident runbook, a proposal format. Write them down once, version them, and point agents at them.</dd>
-    <dt>Least privilege</dt>
-    <dd>Give each task only the access it needs. For example: can write to the repo and deploy to staging, can't deploy to production, can't see customer data.</dd>
-    <dt>Ask, don't guess</dt>
-    <dd>When a decision is missing, the agent should stop and ask. Save the answer in the project so later runs already know it.</dd>
-    <dt>Proof of work</dt>
-    <dd>Before and after screenshots, test output, a clear diff. "It works" isn't evidence.</dd>
-    <dt>Small jobs, in parallel</dt>
-    <dd>Independent tickets can run as separate agents on separate branches at the same time.</dd>
-    <dt>A crew beats one long chat</dt>
-    <dd>One agent plans, implementers build, a reviewer checks each piece, and a verifier judges the whole against the criteria.</dd>
+<section class="guide-section" id="context" aria-labelledby="context-h">
+<div class="prose">
+  <h2 id="context-h"><span class="section-num">05</span>Context is scarce</h2>
+  <p>Code is cheap now. The context window is not. Everything the agent sees in a session (instructions, files, tool output, its own earlier turns) competes for the same limited attention, and quality drops well before the window is full. Keep each task small enough to stay in what Matt Pocock calls the "smart zone".</p>
+  <ul>
+    <li><strong>One task, one session.</strong> Start fresh for new work. Clear rather than compact: a summary of a long session carries its confusion forward.</li>
+    <li><strong>Knowledge lives in files.</strong> Decisions, rules and procedures go in the repo, not in a chat the next session will never see.</li>
+    <li><strong>Keep AGENTS.md short.</strong> It is read on every turn, so each line must change what the agent does. Make it a map that points to deeper docs, not a manual.</li>
+    <li><strong>Load detail on demand.</strong> Skills and reference docs are listed by a one-line description and read only when the task needs them.</li>
+    <li><strong>Keep noise out.</strong> Save long logs and big API responses to a file, then read the slice you need.</li>
+  </ul>
+  <p>Most tools also cache the start of each request, so standing instructions are cheaper to re-send than new material. That helps, but cached tokens still fill the window and are still paid for on every turn. Keep the stable part stable and the whole thing lean.</p>
+  <p class="further">Read more: <a href="articles/context-is-scarce.html">Context is scarce</a> and <a href="articles/prompt-caching.html">Prompt caching and the recurring cost of a prompt</a></p>
+</div>
+</section>
+
+<section class="guide-section" id="habits" aria-labelledby="habits-h">
+<div class="prose">
+  <h2 id="habits-h"><span class="section-num">06</span>Practical habits</h2>
+  <dl class="terms">
+    <div><dt>Context lives in the repo</dt><dd>Standards, procedures and architecture notes go in the repository, where agents can read them and people can review them like code. What the agent cannot see does not exist for it.</dd></div>
+    <div><dt>Skills are written procedures</dt><dd>A release checklist, an incident runbook, a report format. Write it once, version it, and give it a description that says when to use it and when not to.</dd></div>
+    <div><dt>Guides and sensors</dt><dd>Guides steer the agent before it acts: instructions, skills, examples. Sensors check after: tests, linters, type checks, a reviewer. You need both, and good error messages say how to fix the problem.</dd></div>
+    <div><dt>Least privilege</dt><dd>Give each task only the access it needs. Write to the repo and deploy to staging, yes. Deploy to production or read customer data, no.</dd></div>
+    <div><dt>Ask, don't guess</dt><dd>When a decision is missing, the agent stops and asks. The answer is saved in the project so later runs already know it.</dd></div>
+    <div><dt>Proof of work</dt><dd>Before and after screenshots, test output and a clear diff. "It works" is a claim, not evidence.</dd></div>
+    <div><dt>Fix the harness, not the output</dt><dd>When the agent makes the same mistake twice, the fix belongs in the instructions, a check or a skill. Correcting the output by hand teaches it nothing.</dd></div>
+    <div><dt>A crew beats one long chat</dt><dd>One agent plans, implementers build, a reviewer in a fresh session checks each piece, and a verifier judges the whole against the criteria.</dd></div>
   </dl>
+</div>
 </section>
 
-<section id="setup">
-  <h2>6. The bigger setup</h2>
-  <p>Once a team is comfortable with the habits above, the next step is moving the work off individual laptops into a shared setup.</p>
-  <div class="grid3">
-    <div class="card">
-      <h3>Software factory</h3>
-      <p>A shared cloud environment that runs around the clock. You can start a session with a few agents, then pull in a designer or the product owner. They see the whole conversation and can add colours, icons or feedback without needing to know the technical side.</p>
-    </div>
-    <div class="card">
-      <h3>Agents in CI/CD</h3>
-      <p>Every change goes through automated review: code quality, tests, and whether it actually runs on the server. Agents can handle deploys, health checks and rollbacks. A person approves the pull request that says "this goes to production". Test environments match production apart from real client data.</p>
-    </div>
-    <div class="card">
-      <h3>One gateway</h3>
-      <p>Every model call goes through one place. You can see token spend, choose which models are used, control who can reach which agents and data, and spot problems such as a poor cache rate. Simple work goes to cheaper models, hard reasoning to the strongest ones.</p>
-    </div>
-  </div>
-  <p>Where this is heading: people will expect software they can talk to. Their own agent asks questions of a dashboard and changes it to suit them, instead of waiting weeks for a dev team. Building that way internally is good practice for building it for others.</p>
+<section class="guide-section" id="where" aria-labelledby="where-h">
+<div class="prose">
+  <h2 id="where-h"><span class="section-num">07</span>Laptop, cloud or desktop app?</h2>
+  <dl class="terms">
+    <div><dt>Desktop apps</dt><dd>The easiest way in for people who do not write code. Chat apps such as Claude or ChatGPT are good for drafting, research, analysis and small tools. A project with instructions and files is a small harness in its own right.</dd></div>
+    <div><dt>Coding agents</dt><dd>Claude Code, Codex, Cursor, pi and similar tools run in your terminal or editor against a real repo. This is where most hands-on agentic coding happens. Use plans, gates and tests.</dd></div>
+    <div><dt>Shared or cloud</dt><dd>Anything shared, long-running or touching production belongs in a shared environment, not on one person's laptop.</dd></div>
+  </dl>
+  <p>For browser and desktop work, use the lightest tool that does the job: an API before a browser, a browser before full computer control. Look, act once, look again.</p>
+</div>
 </section>
 
-<section id="overview">
-  <h2>7. Agentic systems overview</h2>
-  <p>A picture of how the pieces fit together once you go beyond one person and one agent.</p>
-
-  <h3>The basic flow</h3>
-  <div class="flow">
-    <span>Intent<small>requests, tickets, goals</small></span>
-    <span>Control<small>split the work, pick agents, set budgets and guardrails</small></span>
-    <span>Execution<small>agents in isolated workspaces with scoped tools</small></span>
-    <span>Output<small>merged code, deploys, finished tasks, plus an audit trail</small></span>
-  </div>
-
-  <h3>The crew</h3>
-  <p>A planner splits the work across implementers running in parallel. Each implementer has its own reviewer. A verifier judges the assembled result against the criteria, and anything that fails goes back to the implementer that made it. They all share the same project context.</p>
-  <p>Organise it like a team. People hold the accountable roles and own the gates. Lead agents own an area (building, operations, checks) and hand work to specialists, each with a clear remit, a budget and a list of systems it may touch. Adding capacity means adding specialists, not writing a longer prompt. Any run can be opened, commented on, paused or steered while it's going.</p>
-
-  <h3>Tools, skills and grants</h3>
-  <p>Capability is granted per task. A run gets the tools it needs, the skills that describe how to use them, and nothing else. Access comes as short-lived credentials matched to the task, and every call is logged.</p>
-
-  <h3>Environments</h3>
-  <p>Each team or organisation gets a private workspace, and each run gets a fresh, disposable sandbox inside it. Anything that needs to outlive the run (logs, results, files) is stored separately, so throwing a sandbox away loses nothing.</p>
-
-  <h3>Real systems, under control</h3>
-  <p>Agents can work in real business systems, but through reviewed changes rather than direct writes. Records, procedures and configuration live under version control, so every agent change is a diff with an author and a reviewer, and it can be undone. Anything sensitive, such as a payment or an official submission, stops and waits for a person to approve it on their own device. If nobody answers, the request expires and nothing happens.</p>
-
-  <h3>Asking in the right place</h3>
-  <p>When a run needs a decision, it writes the question and the options, and sends it wherever the person already is: email, chat, a message on their phone. Nobody has to open a dashboard. The answer is saved to the project so the question doesn't come up again.</p>
-
-  <h3>The software lifecycle</h3>
-  <ol class="chips">
-    <li>Intake<small>the ask</small></li>
-    <li>Decide<small>scope and criteria</small></li>
-    <li>Build<small>branch and diff</small></li>
-    <li>Verify<small>tests and evals</small></li>
-    <li>Review<small>human gate</small></li>
-    <li>Deploy<small>pipeline</small></li>
-    <li>Observe<small>health checks</small></li>
+<section class="guide-section" id="factory" aria-labelledby="factory-h">
+<div class="prose">
+  <h2 id="factory-h"><span class="section-num">08</span>The software factory</h2>
+  <p>Once a team is comfortable with the habits above, the next step is moving work off individual laptops into a shared setup that runs around the clock. People and agents work in the same place. A designer or product owner can join a session, see the whole conversation, and add feedback without knowing the technical side.</p>
+  <ol class="flow reveal" aria-label="The lifecycle of a change">
+    <li><strong>Intake</strong><span>the ask</span></li>
+    <li><strong>Decide</strong><span>scope and criteria</span></li>
+    <li><strong>Build</strong><span>branch and diff</span></li>
+    <li><strong>Verify</strong><span>tests and evals</span></li>
+    <li class="gate"><strong>Review</strong><span>human gate</span></li>
+    <li><strong>Deploy</strong><span>the pipeline</span></li>
+    <li><strong>Observe</strong><span>health checks</span></li>
   </ol>
-  <p>Failed checks go back to "decide". After a deploy, health checks can roll a bad release back, open an issue and send it round again. Agents use the same repository, CI and deploy pipeline as everyone else. No parallel setup.</p>
-  <p>The same idea works for the business around the product: signal, research, draft, policy check, human approval, execute, measure. Nothing customer-facing sends itself.</p>
-
-  <h3>Getting better over time</h3>
-  <p>Every run leaves a record: the task and criteria, the diff, the check results, what a reviewer changed or rejected, and the cost and time. That record becomes test data. Past runs turn into graded cases, so a change to prompts, skills or model routing is measured before it ships, and failures become the next test. Human corrections at the gates are the strongest signal of all, because they define what good looks like.</p>
+  <ul>
+    <li><strong>Agents in CI/CD.</strong> Every change gets automated review and tests. Agents can run deploys, health checks and rollbacks. A person approves the change that goes to production.</li>
+    <li><strong>One gateway.</strong> Every model call goes through one place, so you can see spend, route simple work to cheaper models and control who reaches what.</li>
+    <li><strong>A crew with remits.</strong> Each role has a clear job, a budget and a list of systems it may touch. Adding capacity means adding a specialist, not writing a longer prompt.</li>
+    <li><strong>Disposable sandboxes.</strong> Each run gets a fresh workspace. Anything that must outlive it (logs, results, files) is stored separately.</li>
+    <li><strong>Every run is data.</strong> The task, the diff, the checks and what a reviewer changed become test cases for the next change to prompts, skills or routing.</li>
+  </ul>
+  <p class="further">Read more: <a href="articles/software-factory.html">From laptop to software factory</a></p>
+</div>
 </section>
 
-<section id="where">
-  <h2>8. Laptop, cloud or desktop app?</h2>
-  <div class="grid3">
-    <div class="card">
-      <h3>Desktop apps</h3>
-      <p>The easiest way in for non-technical people. The Claude or ChatGPT desktop apps are good for drafting, research, analysis and small tools. Start here if you don't write code.</p>
-    </div>
-    <div class="card">
-      <h3>Coding agents</h3>
-      <p>Claude Code, Codex, Cursor, pi and similar tools run in your terminal or editor against a real repo. Use plans, gates and tests. This is where most hands-on agentic coding happens.</p>
-    </div>
-    <div class="card">
-      <h3>Shared or cloud</h3>
-      <p>Anything shared, long-running, or that touches production belongs in a shared environment, not on one person's laptop.</p>
-    </div>
-  </div>
+<section class="guide-section" id="routines" aria-labelledby="routines-h">
+<div class="prose">
+  <h2 id="routines-h"><span class="section-num">09</span>Routines and loops</h2>
+  <p>Agents do not have to wait for you. A routine runs on a schedule or when something changes: a nightly dependency check, a weekly report, a sweep for stale docs. A loop runs until a stop condition is met, such as "stop when the test suite passes".</p>
+  <ul>
+    <li>Every routine needs logs, a way to run it now, a kill switch and a health check.</li>
+    <li>Use a cheap check to wake an expensive model only when something has changed.</li>
+    <li>The worker never grades its own work, and every step cites evidence.</li>
+    <li>After two failed fix attempts, stop and re-scope rather than letting it grind on.</li>
+    <li>A met stop condition is not the same as accepted work. A human still says yes to sending, deleting, paying or publishing.</li>
+  </ul>
+  <p class="further">Read more: <a href="articles/routines-and-loops.html">Routines, loops and guardrails</a></p>
+</div>
 </section>
 
-<section id="exercise">
-  <h2>9. A first exercise</h2>
+<section class="guide-section" id="exercise" aria-labelledby="exercise-h">
+<div class="prose">
+  <h2 id="exercise-h"><span class="section-num">10</span>Exercises</h2>
+  <h3>Your first gated change</h3>
   <ol class="steps">
     <li>Pick a small, real change in a repo that has a README and some tests.</li>
-    <li>Ask the agent to restate the task and propose a plan with acceptance criteria. Check it. (Gate 1)</li>
+    <li>Ask the agent to restate the task and propose a plan with acceptance criteria. Check it. That is Gate 1.</li>
     <li>Let it make the change on a branch.</li>
     <li>Have it run the tests and show you the output.</li>
-    <li>Review the diff against the criteria and either merge it or send it back. (Gate 2)</li>
+    <li>Review the diff against the criteria and merge it or send it back. That is Gate 2.</li>
     <li>Write anything it got wrong into the repo docs, so the next run gets it right.</li>
   </ol>
-  <div class="card tip">
-    <h3>A quick demo for a group</h3>
-    <p>Make a folder with a few hundred small text files and hide one real task in it (a list of sums to check, say). Ask an agent to find it and work through it, first on its own, then with sub-agents splitting the files. It shows how agents divide work up, and how much faster parallel work is.</p>
-  </div>
-</section>
-
-<section id="pitfalls">
-  <h2>10. Things to watch out for</h2>
-  <ul class="pitfalls">
-    <li><strong>Context bloat.</strong> Too much in the prompt makes results worse. Keep instructions short and keep them in the repo.</li>
-    <li><strong>Tool loops and scope creep.</strong> Agents quietly doing more than you asked. Gate 1 and an explicit "out of scope" list help.</li>
-    <li><strong>Trusting claims over checks.</strong> A model's answer is only a claim until a real check passes.</li>
-    <li><strong>Secrets in prompts or diffs.</strong> Never paste keys or passwords. Use proper secret storage and environment config.</li>
-    <li><strong>Skipping the boring part.</strong> Tests, a README and a working build are what make agents useful. Without them, you're back to reviewing every line by hand.</li>
+  <h3>Three short ones</h3>
+  <ul>
+    <li><strong>Write a 20-line AGENTS.md.</strong> For every line, ask whether the agent would act differently without it. Delete the lines where the answer is no.</li>
+    <li><strong>Audit a skill description.</strong> Write five prompts that should load it and three that should not. Check what actually happens.</li>
+    <li><strong>Make a model table.</strong> List the jobs you give agents, and next to each the cheapest model that does it well enough.</li>
   </ul>
+  <div class="note">
+    <p class="note-title">A quick demo for a group</p>
+    <p>Make a folder with a few hundred small text files and hide one real task in it, such as a list of sums to check. Ask an agent to find it and work through it, first on its own, then with sub-agents splitting the files. It shows how agents divide up work, and how much faster parallel work is.</p>
+  </div>
+</div>
 </section>
 
-<section id="glossary">
-  <h2>11. A few terms</h2>
-  <dl class="glossary">
-    <dt>Agent</dt><dd>A model that can use tools (read files, run commands, open pull requests) in a loop until a task is done.</dd>
-    <dt>Harness</dt><dd>Everything around the model: context, tools, permissions, checks and handoffs.</dd>
-    <dt>Acceptance criteria</dt><dd>The specific things that must be true for the work to count as done.</dd>
-    <dt>Sandbox</dt><dd>An isolated, disposable environment where an agent can work without touching anything else.</dd>
-    <dt>Gateway</dt><dd>A single point that every model call passes through, for metering, routing and access control.</dd>
-    <dt>Software factory</dt><dd>A shared, always-on environment where people and agents build, test and ship together.</dd>
+<section class="guide-section" id="pitfalls" aria-labelledby="pitfalls-h">
+<div class="prose">
+  <h2 id="pitfalls-h"><span class="section-num">11</span>Things to watch out for</h2>
+  <ul>
+    <li><strong>Context bloat.</strong> More instructions do not mean better results. Past a point, they make results worse.</li>
+    <li><strong>Scope creep.</strong> Agents quietly doing more than you asked. Gate 1 and an explicit out-of-scope list help.</li>
+    <li><strong>Trusting claims over checks.</strong> A model's answer is only a claim until a real check passes.</li>
+    <li><strong>Self-grading.</strong> The agent that wrote the code is the worst one to review it. Use a fresh session, and ideally a different model.</li>
+    <li><strong>Plans nobody reads.</strong> A plan you skim and approve is noise. Read it, or make it shorter.</li>
+    <li><strong>Auto-everything.</strong> A pipeline with no human taste in it produces slop. Front-end work especially needs human eyes.</li>
+    <li><strong>Secrets in prompts or diffs.</strong> Never paste keys or passwords. Use proper secret storage and environment config.</li>
+    <li><strong>Skipping the boring part.</strong> Tests, a README and a working build are what make agents useful. Without them you are back to reviewing every line by hand.</li>
+  </ul>
+</div>
+</section>
+
+<section class="guide-section" id="terms" aria-labelledby="terms-h">
+<div class="prose">
+  <h2 id="terms-h"><span class="section-num">12</span>Terms and further reading</h2>
+  <dl class="terms">
+    <div><dt>Agent</dt><dd>A model that can use tools (read files, run commands, open pull requests) in a loop until a task is done.</dd></div>
+    <div><dt>Harness</dt><dd>Everything around the model: instructions, context, tools, permissions, checks and handoffs.</dd></div>
+    <div><dt>Acceptance criteria</dt><dd>The specific, checkable things that must be true for the work to count as done.</dd></div>
+    <div><dt>Skill</dt><dd>Written instructions for a type of task, loaded only when its description matches the job.</dd></div>
+    <div><dt>Tool</dt><dd>Something the agent can call to act on the world: run a command, query an API, open a page.</dd></div>
+    <div><dt>Context window</dt><dd>Everything the model can see on a given turn. Limited, and quality drops as it fills.</dd></div>
+    <div><dt>Prompt cache</dt><dd>Reuse of work for a request that starts with the same text as an earlier one. Cheaper, not free.</dd></div>
+    <div><dt>Sandbox</dt><dd>An isolated, disposable environment where an agent can work without touching anything else.</dd></div>
+    <div><dt>Gateway</dt><dd>A single point that every model call passes through, for metering, routing and access control.</dd></div>
+    <div><dt>Software factory</dt><dd>A shared, always-on environment where people and agents build, test and ship together.</dd></div>
   </dl>
-</section>
 
-<section id="resources">
-  <h2>12. Resources</h2>
   <h3>Reading</h3>
-  <ul class="links">
+  <ul>
+    <li><a href="https://openai.com/index/harness-engineering/">Harness engineering: leveraging Codex in an agent-first world</a>, Ryan Lopopolo (OpenAI). Repo knowledge as the system of record, and AGENTS.md as a map.</li>
+    <li><a href="https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html">Harness engineering for coding agent users</a>, Birgitta Böckeler (martinfowler.com). Guides and sensors.</li>
     <li><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> (Anthropic)</li>
+    <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents</a> (Anthropic)</li>
+    <li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a> (Anthropic)</li>
     <li><a href="https://www.anthropic.com/engineering/claude-code-best-practices">Claude Code best practices</a> (Anthropic)</li>
-    <li><a href="https://openai.com/index/harness-engineering/">Harness engineering: leveraging Codex in an agent-first world</a> (OpenAI)</li>
-    <li><a href="https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html">Harness engineering for coding agent users</a> (martinfowler.com)</li>
+    <li>Matt Pocock's writing and videos at <a href="https://www.aihero.dev/">AI Hero</a>, the source of the "smart zone" idea.</li>
     <li><a href="https://simonwillison.net/tags/coding-agents/">Simon Willison on coding agents</a></li>
-    <li><a href="https://agents.md/">AGENTS.md</a>, a simple shared format for repo instructions</li>
+    <li><a href="https://agents.md/">AGENTS.md</a>, a simple shared format for repo instructions.</li>
+    <li><em>A Philosophy of Software Design</em> by John Ousterhout. Deep modules with small interfaces suit agents as well as people.</li>
   </ul>
   <h3>Tools</h3>
-  <ul class="links">
+  <ul>
     <li><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a> and the <a href="https://claude.ai/download">Claude desktop app</a></li>
     <li><a href="https://developers.openai.com/codex">OpenAI Codex</a></li>
     <li><a href="https://docs.cursor.com/">Cursor</a></li>
     <li><a href="https://github.com/badlogic/pi-mono">pi</a>, an open source coding agent and toolkit</li>
   </ul>
+</div>
 </section>
 
-</main>
 </div>
-
-<footer>
-  <div class="wrap">
-    <p>Agentic coding: a practical guide. Last updated 7 October 2026.</p>
+</div>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="index.html">Guide</a></li>
+        <li><a href="articles/index.html">Articles</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
   </div>
 </footer>
 </body>

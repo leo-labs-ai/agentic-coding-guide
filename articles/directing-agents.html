@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directing agents: from prompts to delegation | Agentic coding guide</title>
+<meta name="description" content="Four levels of working with an agent, why most people get stuck at conversation, and how to pick the right model and effort for each job.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Directing agents: from prompts to delegation">
+<meta property="og:description" content="Four levels of working with an agent, why most people get stuck at conversation, and how to pick the right model and effort for each job.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Directing agents: from prompts to delegation</h1>
+  <p class="lede">There are four ways to work with an agent. Most people stop at the second. The jump to the third is mostly a habit, and it changes what you can hand over.</p>
+  <p class="meta">About 4 minutes to read</p>
+</header>
+
+<div class="prose">
+<h2>The four levels</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th scope="col">Level</th><th scope="col">What you do</th><th scope="col">Unit of work</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Prompt</strong></td><td>Ask once, take the answer</td><td>A message</td></tr>
+    <tr><td><strong>Conversation</strong></td><td>Steer it step by step</td><td>A chat</td></tr>
+    <tr><td><strong>Plan</strong></td><td>Agree a plan and criteria, then let it run</td><td>A task with a definition of done</td></tr>
+    <tr><td><strong>Delegation</strong></td><td>Hand over a job and review the outcome</td><td>A job with acceptance criteria</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Prompt</h3>
+<p>One message, one answer. Good for lookups, quick drafts and small, self-contained snippets. You hold all the context and you check the result yourself.</p>
+
+<h3>Conversation</h3>
+<p>You ask, it does a bit, you correct it, it does a bit more. This is where most people settle, because it feels productive and it is how chat apps are designed. The trouble is that you are the harness. You remember the rules, you notice the mistakes, you decide when it is done. The agent can only work as fast as you can watch it.</p>
+
+<h3>Plan</h3>
+<p>Before any work, the agent proposes a plan and the criteria the result will be judged on. You read it, fix it and agree it. Then it runs. The plan becomes the contract: the agent knows what done means, and you know what you will be checking.</p>
+<p>This is the biggest jump. It needs no new tools. It needs you to spend five minutes up front instead of fifty minutes steering.</p>
+
+<h3>Delegation</h3>
+<p>You hand over a job, and the agent works through it on its own, often with sub-agents, and comes back with proof. You review the outcome at a gate. This only works when the harness carries what you used to carry in your head: the rules in the repo, the checks in the pipeline, the procedures in skills.</p>
+<p>You do not have to delegate everything. The point is to know which level a task needs, and to make sure the harness can support it.</p>
+
+<h2>Moving up a level</h2>
+<p>Some signs you are ready to move from conversation to plan:</p>
+<ul>
+  <li>You keep correcting the same kind of mistake. Write the rule down.</li>
+  <li>You keep asking "is it done?" Write the criteria first.</li>
+  <li>You lose track of what the agent has changed. Ask for a plan and a summary.</li>
+</ul>
+<p>And from plan to delegation:</p>
+<ul>
+  <li>The agent's plans rarely need fixing.</li>
+  <li>The checks are good enough that a passing run is usually right.</li>
+  <li>You find yourself approving the plan without changes, then typing "continue".</li>
+</ul>
+
+<h2>Picking a model</h2>
+<p>Choosing the model is part of directing the work. The rule is simple: use the cheapest model that clears the bar for this job. It helps to think in tiers rather than product names, because names change every few months.</p>
+<dl class="terms">
+  <div><dt>Light</dt><dd>Lookups, scouting a codebase, sorting and summarising. Fast and cheap. Good for sub-agents that read a lot and report a little.</dd></div>
+  <div><dt>Bulk</dt><dd>Routine, well-specified changes at volume: renames, small fixes, test scaffolding.</dd></div>
+  <div><dt>Workhorse</dt><dd>Most real building and drafting. The default for feature work.</dd></div>
+  <div><dt>Flagship</dt><dd>Architecture, security, tricky debugging and high-stakes review. Slower and dearer, and worth it where a mistake is costly.</dd></div>
+</dl>
+<p>A few rules make the table work.</p>
+<ul>
+  <li><strong>Reviews never go cheap.</strong> A weak reviewer passes weak work. If anything, the reviewer should be at least as strong as the builder.</li>
+  <li><strong>Review across families.</strong> A model from a different provider than the builder catches different mistakes. Two models with the same blind spot agree with each other.</li>
+  <li><strong>Escalate on failure.</strong> If a job fails at one tier, try the next one up, rather than rewording the prompt five times.</li>
+  <li><strong>Never let the builder grade its own work.</strong> Keep planning, building and judging separate, even if the same model does all three in different sessions.</li>
+</ul>
+
+<h2>Model and effort are separate dials</h2>
+<p>Most tools let you set how hard a model thinks, as well as which model it is. These are different controls. A strong model on low effort is often better than a weak one on maximum effort, and maximum thinking by default wastes time and money on easy jobs. Turn effort up for the hard step, not for the whole session.</p>
+
+<h2>Set it in the control, then check</h2>
+<p>Writing "use the strongest model for this" in a prompt does nothing. The model cannot change which model it is. Set the model in the tool's settings or in the configuration for that job, then check what actually ran. Most tools show it in the status line or the logs.</p>
+<p>Pick the model at the start of a session. Switching halfway through sends the whole conversation to a model with an empty cache, which is slow and expensive. If you need a different model, start a new session and give it a short handover file.</p>
+
+<h2>Subscriptions and quotas</h2>
+<p>Many people use agents on a subscription rather than paying per call. That changes the cost question. You are not paying per token, but you are spending a limited allowance over a time window. Burning a flagship model's quota on lookups means it is not there when you need it for a hard review. The tiers still apply, for a different reason.</p>
+
+<h2>Make your own table</h2>
+<p>Write down the jobs you actually give agents: "summarise a PR", "write unit tests", "plan a feature", "review a security change". Next to each, put the cheapest tier that does it well enough, and the tier you use to review it. Revisit it when a new model comes out. It takes ten minutes and saves a lot of guessing.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="human-gates.html"><small>Previous</small>Human gates, and why every "continue" is a harness failure</a>
+    <a class="next" href="routines-and-loops.html"><small>Next</small>Routines, loops and guardrails</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

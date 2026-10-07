@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Human gates, and why every "continue" is a harness failure | Agentic coding guide</title>
+<meta name="description" content="Put people where their judgement counts: before the work and before it ships. If you are babysitting an agent in between, the harness is missing something.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Human gates, and why every &quot;continue&quot; is a harness failure">
+<meta property="og:description" content="Put people where their judgement counts: before the work and before it ships. If you are babysitting an agent in between, the harness is missing something.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Human gates, and why every "continue" is a harness failure</h1>
+  <p class="lede">People should spend their attention where judgement counts: agreeing the job before it starts, and approving it before it ships. Not nudging an agent along in between.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>Watch someone new to coding agents and you will often see the same pattern. They give the agent a task. It does a bit, then stops and asks a question. They answer. It does a bit more and asks for permission to run a command. They approve. It reports progress and waits. They type "continue". An hour later they have a result and a sore wrist, and they could have written it themselves.</p>
+<p>The agent was not being stupid. It was missing things it needed to keep going on its own: a decision, a permission, a definition of done. Each "continue" marks a spot where the harness had a gap and a person filled it by hand.</p>
+
+<h2>Two gates</h2>
+<p>A better arrangement puts people at two points, and lets the loop run in between.</p>
+<ol class="flow" aria-label="Where the gates sit">
+  <li><strong>Request</strong><span>a ticket or an idea</span></li>
+  <li class="gate"><strong>Gate 1</strong><span>what, why and done</span></li>
+  <li><strong>Agent loop</strong><span>build and check</span></li>
+  <li class="gate"><strong>Gate 2</strong><span>approved to ship</span></li>
+  <li><strong>Deploy</strong><span>the real pipeline</span></li>
+</ol>
+
+<h3>Gate 1: before the work</h3>
+<p>The agent restates the task in its own words. This is the cheapest bug fix there is. If it has misunderstood, you find out now, before it has built the wrong thing.</p>
+<p>Then you agree three things: why the work is being done, what it should change, and the acceptance criteria that will decide whether it is finished. Add an out-of-scope list if the task sits next to something tempting. "Do not touch the refund flow" saves a long review later.</p>
+<p>A plan only helps if you read it. A plan you skim and approve is noise that makes everyone feel safer. If the plans are too long to read properly, ask for shorter ones.</p>
+
+<h3>Gate 2: after the work</h3>
+<p>The agent hands back proof, not a story:</p>
+<ul>
+  <li>The diff, and a plain summary of what changed.</li>
+  <li>Each acceptance criterion marked pass or fail, with evidence attached.</li>
+  <li>Test output from the real pipeline, not the agent's word that tests pass.</li>
+  <li>Screenshots for anything visual: before and after.</li>
+</ul>
+<p>Review the code, not just the summary. The code is the ground truth. A summary can be accurate and still leave out the part that matters.</p>
+<p>If Gate 2 says no, the work goes back into the loop with a reason. The reason is valuable. It often points to the next thing to fix in the harness.</p>
+
+<h2>Reading a "continue" as a bug report</h2>
+<p>Every time you have to step in mid-run, ask what would have let the agent carry on without you. The answer is usually one of a few things.</p>
+<ul>
+  <li><strong>A missing criterion.</strong> The agent stopped because it could not tell whether it was done. Write the criterion down and give it a way to check.</li>
+  <li><strong>A missing decision.</strong> It needed to choose between two approaches and had no basis for choosing. Record the decision in the repo so it is there next time.</li>
+  <li><strong>A missing permission.</strong> It kept asking to run the same safe command. Allow that command for this kind of task.</li>
+  <li><strong>A missing tool.</strong> It could not see the result of its own work, such as a page in a browser, so it asked you to look. Give it the tool.</li>
+  <li><strong>A task that is too big.</strong> It lost the thread halfway through. Split the work into smaller, vertical slices that each end in something testable.</li>
+</ul>
+<p>Some interruptions are healthy. An agent that stops to ask before deleting data is doing its job. Aim for every question to be one only a person could answer, rather than for no questions at all.</p>
+
+<h2>When a decision is missing</h2>
+<p>Sometimes the agent does need a person, and the person is not at their desk. A good harness writes the question and the options down and sends it wherever that person already is: email, a team chat, a message on their phone. Nobody should have to open a special dashboard to find out they are blocking something.</p>
+<p>When the answer comes back, it is saved to the project. The next run that hits the same question finds the answer instead of asking again.</p>
+
+<h2>Actions that always need a yes</h2>
+<p>Some actions should never happen without a person approving them, however good the agent is: sending a message to a customer, deleting data, paying for something, publishing anything public.</p>
+<p>For these, approval should happen on the approver's own device, not in a text box the agent could type into. And the safe default is expiry. If nobody answers within a set time, the request lapses and nothing happens. An unanswered approval should never turn into a yes.</p>
+
+<h2>QA is the taste filter</h2>
+<p>It is possible to automate every step: an agent writes the code, another reviews it, a third tests it, and it ships. For some internal plumbing that is fine. For anything people will use, a fully automatic pipeline turns into a slop machine. Everything passes, and nothing is quite right.</p>
+<p>Human review at Gate 2 is where taste lives. Does this feel right to use? Is this the copy we would write? Front-end work especially needs human eyes. Automated checks can tell you the button exists. They cannot tell you it is in the wrong place.</p>
+
+<h2>An example</h2>
+<p>Sam at Fernhill Supply asks an agent to add a "notify me when back in stock" button to product pages.</p>
+<p>At Gate 1, the agent restates it, and Sam spots a gap: should the notification be an email or a text? Sam decides email only, notes it in the project docs, and agrees the criteria. The button appears only on out-of-stock items. Signing up twice does not send two emails. Nothing is sent until stock actually arrives. The checkout is out of scope.</p>
+<p>The agent works through the loop without stopping. At Gate 2, Sam gets the diff, screenshots of the button on a phone and a laptop, and test results for each criterion. Sam notices the button text is clumsy, fixes it, and approves.</p>
+<p>That correction goes into the project's copy guidelines. Next time, the agent gets it right first time. Two moments of human attention, both spent on judgement.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="prompt-caching.html"><small>Previous</small>Prompt caching and the recurring cost of a prompt</a>
+    <a class="next" href="directing-agents.html"><small>Next</small>Directing agents: from prompts to delegation</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

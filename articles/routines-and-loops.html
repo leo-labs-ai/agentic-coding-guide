@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Routines, loops and guardrails | Agentic coding guide</title>
+<meta name="description" content="Agents that run on a schedule, on an event, or until a condition is met. What every routine needs, three kinds of loop, and the guardrails that stop them going wrong.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Routines, loops and guardrails">
+<meta property="og:description" content="Agents that run on a schedule, on an event, or until a condition is met. What every routine needs, three kinds of loop, and the guardrails that stop them going wrong.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>Routines, loops and guardrails</h1>
+  <p class="lede">Once agents can work without you watching, the question changes from "how do I steer it?" to "how do I know it is still doing the right thing?"</p>
+  <p class="meta">About 4 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>Most agent work starts with a person typing a request. It does not have to. A lot of useful work is repetitive and predictable: checking dependencies, writing the weekly report, sweeping out stale docs, triaging new issues. Agents can do these on their own, if you build in the right guardrails.</p>
+
+<h2>Three kinds of routine</h2>
+<ul>
+  <li><strong>On a clock.</strong> Every night at two, every Monday morning. A scheduled job that starts an agent with a fixed brief.</li>
+  <li><strong>On an event.</strong> A new issue is opened, a file lands in a folder, a build fails. The event starts the run and supplies the details.</li>
+  <li><strong>In a session.</strong> While you work, an agent re-runs a check every few minutes, such as watching a deploy or a long test run, and tells you when something changes.</li>
+</ul>
+
+<h2>What every routine needs</h2>
+<p>A routine that runs unattended needs four things, and it is worth refusing to switch one on without them:</p>
+<ol class="steps">
+  <li><strong>Logs.</strong> What it did, when, and what it saw. If you cannot see a run, you cannot trust it.</li>
+  <li><strong>A "run now" button.</strong> So you can test it, and re-run it after a fix, without waiting for the schedule.</li>
+  <li><strong>A kill switch.</strong> One obvious way to stop it, fast.</li>
+  <li><strong>A health check.</strong> Something that notices when the routine has stopped running, or keeps failing. Silence should not look like success.</li>
+</ol>
+<p>Add a fifth for the long term: a retirement condition. Routines accumulate. Write down what problem each one prevents and when it can be switched off.</p>
+
+<h2>Cheap checks, expensive thinking</h2>
+<p>Many routines spend most of their time finding nothing. Running a strong model every hour to discover that nothing has changed is waste. A better pattern is a heartbeat: a cheap check, often plain code, that looks for change and wakes the expensive model only when there is something to think about.</p>
+<p>At Fernhill Supply, a script checks the supplier price list every morning. Most days it is unchanged and the script exits. When it changes, an agent compares the new prices against the shop's margins and drafts a list of products to review. A person approves any price change.</p>
+
+<h2>Three kinds of loop</h2>
+<p>A routine runs on a schedule. A loop runs until something is true. There are three useful kinds.</p>
+
+<h3>Run until a stop condition</h3>
+<p>The simplest: "keep going until the test suite passes", or "work through every file in this folder". Good for long, mechanical jobs you would otherwise babysit, such as a big migration run overnight. The stop condition must be checkable by a machine. "Until it looks good" is not a stop condition.</p>
+
+<h3>Measure and improve</h3>
+<p>Sometimes called hill-climbing or an eval loop. You define what good looks like, measure the current version, make a change, and measure again. Keep the change if the score improves. This is how you improve a prompt, a skill or a routing rule with evidence rather than feel.</p>
+<p>The rule here is firm: do not optimise a skill without a benchmark. Without one, you are just automating vibes. A benchmark does not need to be fancy. Ten cases is enough to start, with at least three taken from real failures, each with an assertion you can check, kept in a test tool or even a spreadsheet.</p>
+
+<h3>Supervision</h3>
+<p>For bigger jobs, one agent supervises several workers. Each worker gets a written brief, a status file it keeps up to date, and an inbox for questions. The supervisor reads the status files, answers what it can, and passes the rest to a person. The files mean nobody has to hold the whole picture in one context window.</p>
+
+<h2>Guardrails</h2>
+<p>Unattended agents fail in predictable ways. These rules catch most of them.</p>
+<ul>
+  <li><strong>The worker never grades its own work.</strong> A separate checker, ideally a different model in a fresh session, judges the result against the criteria.</li>
+  <li><strong>Every step cites evidence.</strong> "Fixed" is not a status. "Fixed: test <code>checkout_retry</code> now passes, log attached" is.</li>
+  <li><strong>Two strikes, then stop.</strong> After two failed attempts to fix the same thing, the loop stops and asks for the task to be re-scoped. A third attempt in the same direction rarely works, and it burns budget.</li>
+  <li><strong>Done is not accepted.</strong> A loop meeting its stop condition means the machine-checkable part is finished. A person still decides whether the work is good.</li>
+  <li><strong>Some actions always need a yes.</strong> Sending, deleting, paying and publishing wait for a human, however long the loop has been running smoothly.</li>
+  <li><strong>Budgets are hard limits.</strong> Each run has a ceiling on time and spend. Hitting it stops the run and reports where it got to.</li>
+</ul>
+
+<h2>Improving the harness itself</h2>
+<p>The most valuable loop is the one that improves the harness. When an agent keeps failing at a kind of job, work through it in order:</p>
+<ol class="steps">
+  <li>Run the current setup on a fixed set of cases to get a baseline.</li>
+  <li>Find the earliest point in a failed run where things went wrong, the first bad handoff, not the final error.</li>
+  <li>Make the smallest change that would have prevented it: a line of instruction, a check, a step in a skill.</li>
+  <li>Rerun from fresh on the same cases, plus a couple you held back.</li>
+  <li>Keep it, revise it, or remove it, based on the result.</li>
+</ol>
+<p>One easy step to skip: confirm the change was actually used. A new skill that never loaded, or an instruction that was cut off, will appear to "not help" for the wrong reason.</p>
+
+<h2>Keep a scar list</h2>
+<p>When an agent makes the same mistake twice, write it down, along with the fix you put in the harness. Over time this list becomes the best guide you have to what your setup needs. It also stops you fixing the same output by hand every week. Fix the harness, not the output.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="directing-agents.html"><small>Previous</small>Directing agents: from prompts to delegation</a>
+    <a class="next" href="software-factory.html"><small>Next</small>From laptop to software factory</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

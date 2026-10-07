@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From laptop to software factory | Agentic coding guide</title>
+<meta name="description" content="Desktop app, coding agent or shared cloud setup: where each kind of agent work belongs, and what a software factory looks like when a team moves its agents off laptops.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="From laptop to software factory">
+<meta property="og:description" content="Desktop app, coding agent or shared cloud setup: where each kind of agent work belongs, and what a software factory looks like when a team moves its agents off laptops.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>From laptop to software factory</h1>
+  <p class="lede">Where agent work should run depends on who is doing it, how long it takes and what it touches. Past a certain point, the answer is a shared place that never switches off.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<h2>Three places to run an agent</h2>
+
+<h3>The desktop app</h3>
+<p>For people who do not write code, the chat apps from the big model providers are the easiest way in. They are good for drafting, research, analysis and small tools. Most have a projects feature: standing instructions plus a set of files that every chat in the project can see. That is a harness in miniature, and using it well (short instructions, the right reference files, one project per kind of work) gets much better results than starting from a blank chat each time.</p>
+
+<h3>A coding agent on your machine</h3>
+<p>Tools such as Claude Code, Codex, Cursor and pi run in a terminal or editor against a real repo. They can read the code, run tests and make changes on a branch. This is where most hands-on agentic coding happens, and where the habits in this guide pay off most: plans, criteria, gates and tests.</p>
+<p>A laptop is a fine place to start. It stops being fine when the work is shared, runs for a long time, or touches anything in production. A job that dies when you close the lid, or that only one person can see, is a bottleneck.</p>
+
+<h3>A shared environment</h3>
+<p>Anything shared, long-running or production-facing belongs somewhere shared. That might be a cloud workspace, a CI system that can run agents, or a dedicated server. The point is that the work, its history and its results are visible to the team, and nothing depends on one person's machine being on.</p>
+
+<h2>Browsers, desktops and the lightest tool</h2>
+<p>A lot of real work happens in web apps and desktop software with no clean API. Agents can drive a browser, and some can control a whole desktop through screenshots. Use the lightest tool that does the job:</p>
+<ol class="steps">
+  <li>An API, if there is one. Fast, reliable and easy to check.</li>
+  <li>A browser the agent controls, if there is not.</li>
+  <li>Full computer control as a last resort. It is slow, and screenshots fill the context window quickly. Save them to disk and keep only the current one in view.</li>
+</ol>
+<p>Whichever you use, the pattern is the same: look, act once, look again. An agent that fires off five clicks without checking the page in between is guessing.</p>
+<p>A browser side panel that fills in a form is a good small case. The agent works only in tabs it opened itself. It pauses for a person whenever there is a login or a two-factor prompt. And a person reviews the filled form before anything is submitted.</p>
+<p>When you need to show an agent something on screen, point rather than describe. Most tools now let you select or annotate an element. "This button" with a highlight beats a paragraph about where the button is.</p>
+
+<h2>The software factory</h2>
+<p>When a team gets comfortable with agents, the natural next step is a software factory: a shared environment that runs around the clock, where agents and people build, test and ship together.</p>
+<p>It changes who can take part. A session can start with a developer and a few agents, then pull in a designer or a product owner. They see the whole conversation and can add colours, copy or feedback without needing to know the technical side.</p>
+
+<h3>The lifecycle</h3>
+<ol class="flow" aria-label="The lifecycle of a change">
+  <li><strong>Intake</strong><span>the ask</span></li>
+  <li><strong>Decide</strong><span>scope and criteria</span></li>
+  <li><strong>Build</strong><span>branch and diff</span></li>
+  <li><strong>Verify</strong><span>tests and evals</span></li>
+  <li class="gate"><strong>Review</strong><span>human gate</span></li>
+  <li><strong>Deploy</strong><span>the pipeline</span></li>
+  <li><strong>Observe</strong><span>health checks</span></li>
+</ol>
+<p>Failed checks go back to Decide. After a deploy, health checks can roll back a bad release, open an issue and send it round again. Agents use the same repo, CI and deploy pipeline as everyone else. There is no separate, special path for agent work.</p>
+
+<h3>The pieces</h3>
+<ul>
+  <li><strong>Agents in CI/CD.</strong> Every change gets automated review for quality and tests, plus a check that it actually runs. Agents can handle deploys, health checks and rollbacks. Test environments match production, without real customer data. A person approves the change that goes to production.</li>
+  <li><strong>One gateway.</strong> Every model call goes through one place. That gives you spend by team and job, routing of simple work to cheaper models, control over who can reach which agents and data, and early warning of problems such as a falling cache hit rate.</li>
+  <li><strong>A crew, not one long chat.</strong> A planner splits the work. Implementers build in parallel, each with its own reviewer. A verifier judges the assembled result against the criteria and sends failures back to whoever built them.</li>
+  <li><strong>Roles with remits.</strong> Each agent role has a clear job, a budget and a list of systems it may touch. Adding capacity means adding a specialist, not making one prompt longer.</li>
+  <li><strong>Workspaces and sandboxes.</strong> Each team gets a private workspace. Each run gets a fresh, disposable sandbox inside it. Logs, results and files that must outlive the run are stored separately, so throwing a sandbox away loses nothing.</li>
+  <li><strong>Least privilege.</strong> Access is granted per task, with short-lived credentials. A typical build run might be allowed to write to the repo and deploy to staging, and denied production deploys and customer data. Every call is logged.</li>
+</ul>
+
+<h3>Real systems, under control</h3>
+<p>Agents can work on real business systems too: records, procedures, configuration. The safe way is through reviewed changes rather than direct writes. Keep those things under version control and every agent change becomes a diff with an author and a reviewer, which can be undone. Anything sensitive, such as a payment or an official submission, waits for a person to approve it on their own device, and expires if nobody does.</p>
+
+<h3>Getting better over time</h3>
+<p>Every run leaves a record: the task and criteria, the diff, the check results, what a reviewer changed or rejected, and the time and cost. That record becomes test data. Past runs turn into graded cases, so a change to prompts, skills or model routing is measured before it ships, and each new failure becomes the next test case. Human corrections at the gates are the strongest signal of all, because they show what good looks like.</p>
+
+<h2>Start smaller than you think</h2>
+<p>A factory sounds like a big build. It does not have to start that way. A few sharp skills beat dozens of vague ones. A reviewer agent is a better first addition than more implementers, because it raises the quality of everything that follows. Write a process down and run it by hand before you automate it.</p>
+<p>And keep the split in mind. Agents get you most of the way quickly: a proof of concept in a day, the plumbing, the first draft. The last stretch, where the work has to fit the users and the business, still needs people who know both. A good factory gives them more time for that part.</p>
+
+<h2>Where this is heading</h2>
+<p>People will increasingly expect software they can talk to. Instead of waiting weeks for a change, they will ask their own agent to adjust a dashboard or a report to suit them. Building software this way internally is good practice for building it for others.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="routines-and-loops.html"><small>Previous</small>Routines, loops and guardrails</a>
+    <a class="next" href="index.html"><small>Back to</small>All articles</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

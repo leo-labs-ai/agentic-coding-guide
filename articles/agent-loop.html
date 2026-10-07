@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The agent loop and acceptance criteria | Agentic coding guide</title>
+<meta name="description" content="A worked example: duplicate orders at checkout. How an agent loops through a fix, why a disabled button proves nothing, and what proof a reviewer actually needs.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="The agent loop and acceptance criteria">
+<meta property="og:description" content="A worked example: duplicate orders at checkout. How an agent loops through a fix, why a disabled button proves nothing, and what proof a reviewer actually needs.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b43c0b'/%3E%3Cpath d='M9 22l7-12 7 12' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22l7-12 7 12" stroke="var(--bg)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Agentic coding guide</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html" aria-current="page">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+<article class="article">
+<header class="article-head">
+  <p class="crumb"><a href="index.html">Articles</a></p>
+  <h1>The agent loop and acceptance criteria</h1>
+  <p class="lede">An agent is only as good as its idea of "done". A worked example, from a bug report to a fix someone can approve.</p>
+  <p class="meta">About 5 minutes to read</p>
+</header>
+
+<div class="prose">
+<p>Fernhill Supply sells garden tools online. Customers have started getting charged twice. The support team traced it to the checkout page: if someone double-clicks Pay, or the network is slow and they click again, two orders go through.</p>
+<p>Sam, the developer, hands the bug to a coding agent. This article follows what happens, and where it can go wrong.</p>
+
+<h2>The loop</h2>
+<p>Under the hood, every agent does the same thing. The model reads its context and either answers or asks for a tool: read this file, run this command, open this page. The harness runs the tool and adds the result to the context. The model reads again and decides the next step. Round and round, until it decides it is done or something stops it.</p>
+<p>Good runs give that loop a shape:</p>
+<ol class="steps">
+  <li><strong>Orient.</strong> Read the bug report, the checkout handler, the orders API and any notes in the repo about payments.</li>
+  <li><strong>Plan.</strong> Say what it will change and how it will know the change worked.</li>
+  <li><strong>Execute.</strong> Make the change on a branch.</li>
+  <li><strong>Judge.</strong> Run the checks against the criteria. If they fail, go back to the plan.</li>
+  <li><strong>Learn.</strong> Record what happened so the next run starts smarter.</li>
+</ol>
+<p>The loop is bounded by three things: the tools the agent may use, the budget it has, and the permissions it holds. Inside those bounds, the only thing that decides when it stops is its idea of done. That is why acceptance criteria matter more than anything else in the brief.</p>
+
+<h2>The tempting fix</h2>
+<p>Ask an agent to "fix the duplicate orders on double-click" and there is a good chance it does this: find the Pay button, disable it after the first click, run the page, see that a second click does nothing, report success.</p>
+<p>It looks right. It even passes a quick manual test. But it does not fix the bug. A slow network can still send the request twice. A customer can refresh mid-payment. A mobile browser can retry on its own. The button was only ever one way in. The real problem is that the server creates a new order every time it receives the request.</p>
+<p>The agent did nothing wrong by its own lights. It was asked to stop duplicates on double-click, and it did. The brief described a symptom, so the agent fixed the symptom.</p>
+
+<h2>Writing the criterion</h2>
+<p>A good acceptance criterion describes the outcome the business cares about, in a form a check can prove. For this bug:</p>
+<blockquote><p>One intended purchase produces exactly one order, including when the same request arrives more than once.</p></blockquote>
+<p>That sentence changes the work. A disabled button cannot satisfy it on its own, because it says nothing about repeated requests. The agent now has to look at the server: an idempotency key sent with the payment request, say, so the API recognises a repeat and returns the existing order instead of creating a new one.</p>
+<p>It also tells the agent what proof to collect. Two checks, not one:</p>
+<ul>
+  <li><strong>A browser check.</strong> Open the checkout, double-click Pay, and confirm one order exists.</li>
+  <li><strong>An API check.</strong> Send the same payment request twice with the same key, and confirm the second call returns the first order rather than a new one.</li>
+</ul>
+<p>The patch plus both results is something Sam can actually review. Without the API check, Sam would have to reason about every retry path personally, which is exactly the work the agent was meant to save.</p>
+
+<h2>What good proof looks like</h2>
+<p>When the agent finishes, Sam should get a short handover, not a story:</p>
+<pre><code>Change: idempotency key on POST /orders; Pay button disabled while pending.
+
+Criterion: one intended purchase creates one order,
+including repeated requests.
+
+  Browser: double-click Pay           1 order created   PASS
+  API: same request sent twice        1 order created   PASS
+  Existing checkout tests             all passing       PASS
+
+Not changed: refunds, order emails.</code></pre>
+<p>Each line is checkable. Sam can open the diff, rerun either test, and decide. The agent saying "I fixed it and tested it" is a claim. This is evidence.</p>
+
+<h2>When it still stops short</h2>
+<p>Suppose Sam writes the criterion well and the agent still stops after disabling the button. It reports the browser check, skips the API check, and calls it done.</p>
+<p>Correcting it in the chat would work for today. A better move is to ask what in the harness let it stop there. Perhaps the debugging skill the agent loaded says "reproduce the bug, fix it, confirm the reproduction no longer fails", and never mentions retries. The agent followed its procedure exactly.</p>
+<p>So Sam adds one step to the debugging skill: "For anything that creates, charges or sends, also check that a repeated request has no extra effect." That is a small change that will apply to every future bug of this kind, not just this one.</p>
+<p>Then Sam checks that the change actually helps. Run the original setup and the changed one on the same set of cases: this bug, a couple of similar ones from the history, and one or two held back that were not used while writing the new step. If the new version catches the retry case and does not make anything else worse, keep it. If not, revise or remove it. A change to a skill that has not been measured is a guess.</p>
+
+<h2>Outside of code</h2>
+<p>The same shape works for office work. Take a weekly project report. Code filters the project list down to the overdue items, so the model never has to read the whole spreadsheet. A reporting skill supplies the format. The model writes the explanations and flags any project with a missing status rather than guessing one.</p>
+<p>The criterion might be: every overdue project appears once, with its owner and the reason it is late, and any project without a status is listed separately. A person can check that in two minutes.</p>
+
+<h2>The habit</h2>
+<p>Before you hand a job to an agent, write one sentence that says what must be true when it is done, and how you would check it. If you cannot write that sentence, the agent cannot either, and it will pick its own idea of done. It will usually pick the easiest one.</p>
+</div>
+
+<footer class="article-foot">
+  <nav class="pager" aria-label="More articles">
+    <a class="prev" href="harness-engineering.html"><small>Previous</small>Harness engineering: the part you control</a>
+    <a class="next" href="context-is-scarce.html"><small>Next</small>Context is scarce</a>
+  </nav>
+</footer>
+</article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p>Agentic coding: a practical guide. Written by a practitioner, for people who want agents to do real work that someone can check. Last updated 7 October 2026.</p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="../index.html">Guide</a></li>
+        <li><a href="../articles/index.html">Articles</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>
